@@ -1,0 +1,49 @@
+=== Plugin Name ===
+Contributors: Keisuke Oyama
+Donate link: http://keicode.com/contact.php
+Tags: tags, Japanese
+Requires at least: 2.8.4
+Tested up to: 2.8.4
+Stable tag: 0.2.3
+
+Japanese AutoTag is a WordPress plugin which generates tags automatically based on your post title.
+
+== Description ==
+
+Japanese AutoTag is a WordPress plugin which generates tags automatically based on your post title.
+
+For example, if you writes "Ensoku de Fujisan ni nobotta" in Japanese as your post's title, Japanese 
+AutoTag will analyze the Japanese text when saving and set "Ensoku" and "Fujisan" as its tags automatically.
+
+You can configure excluding words so as to prevent specific words from being tagged. 
+If you don't want to set "Fujisan" as a tag automatically, you can add "Fujisan" into the excluding word list. 
+
+Note that you have to enter Yahoo! JAPAN application ID to enable this plugin. You can get the ID from the
+following URL for free: http://e.developer.yahoo.co.jp/webservices/register_application  
+
+== Installation ==
+
+1. Activate the plugin through the 'Plugins' menu in WordPress.
+1. Enter your Yahoo! JAPAN application ID from the plugin configuration page.
+
+== Frequently Asked Questions ==
+
+= Why do I have to enter Yahoo! JAPAN application ID? =
+
+This plugin uses Yahoo! JAPAN's morphological analysis web service to analyze Japanese text 
+behind the scene. So you need to enter the ID to work it correctly.
+
+= How can I get Yahoo! JAPAN application ID? =
+
+You can get the ID from Yahoo! JAPAN developer center for free:
+http://e.developer.yahoo.co.jp/webservices/register_application
+
+
+== Screenshots ==
+
+1. Configuration page for the plugin
+
+== Changelog ==
+
+= 0.2.0 =
+* First release.
