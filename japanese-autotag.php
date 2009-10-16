@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Japanese Autotag
-Version: 0.2.4
+Version: 0.2.5
 Description: Automatically inserts tags by post titles.
 Author: Keisuke Oyama
 Author URI: http://keicode.com/
@@ -77,9 +77,9 @@ class JapaneseAutoTag {
 			check_admin_referer( 'japanese-autotag-nonce' );
 			
 			$options = array();
-			
-			$options['appkey'] = htmlentities($_POST['appkey'], ENT_QUOTES, 'UTF-8');
-			$options['noiselist'] = htmlentities($_POST['noiselist'], ENT_QUOTES, 'UTF-8');
+						
+			$options['appkey'] = htmlentities(trim($_POST['appkey']), ENT_QUOTES, 'UTF-8');
+			$options['noiselist'] = htmlentities(trim($_POST['noiselist']), ENT_QUOTES, 'UTF-8');
 			
 			if ( $options['appkey'] == '' || $this->validate_key( $options['appkey'] ) ) {
 				update_option( $this->db_option, $options );
