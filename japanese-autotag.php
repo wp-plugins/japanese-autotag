@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: Japanese Autotag
-Version: 0.2.5
+Version: 0.2.6
 Description: Automatically inserts tags by post titles.
 Author: Keisuke Oyama
 Author URI: http://keicode.com/
-Plugin URI: http://keicode.com/net/wordpress-plugin-japanese-autotag.php
+Plugin URI: http://wordpress.org/extend/plugins/japanese-autotag/
 */
 
 // Version Check
