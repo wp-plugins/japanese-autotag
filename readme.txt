@@ -4,7 +4,7 @@ Donate link: http://keicode.com/contact.php
 Tags: tags, Japanese
 Requires at least: 2.8.4
 Tested up to: 2.8.4
-Stable tag: 0.2.6
+Stable tag: 0.2.7
 
 Japanese AutoTag is a WordPress plugin which generates tags automatically based on your post title.
 
@@ -54,3 +54,5 @@ http://e.developer.yahoo.co.jp/webservices/register_application
 * Trimed option parameter values
 = 0.2.6 =
 * Supported PHP4.
+= 0.2.7 =
+* Added a prohibited pattern matching feature.

@@ -19,6 +19,30 @@ Enter words you don't want to add as tag. If you want to enter multiple words, s
 </p>
 <p><input type="text" style="width:500px;" name="noiselist" value="<?php echo $noiselist; ?>"></p>
 </td></tr>
+<tr><td valign="top"><p>Exception Pattern:<br><i>Advanced</i></p></td><td>
+<p>
+You can specify a Perl-style regular expression pattern to prohibit words matching the pattern from being tagged.  
+</p>
+<p><input type="text" style="width:300px;" name="expattern" value="<?php echo $expattern; ?>"></p>
+
+<table>
+<tr><td colspan="2"><i>Regular Expression Hints</i></td></tr>
+<tr><td nowrap="nowrap">Word you want to prohibit</td><td>Pattern</td></tr>
+<tr>
+	<td nowrap="nowrap">Number only:</td>
+	<td nowrap="nowrap"><code>/^[0-9]+$/</code></td>
+</tr>
+<tr>
+	<td nowrap="nowrap">Alphabet only:</td>
+	<td nowrap="nowrap"><code>/^[a-zA-Z]+$/</code></td>
+</tr>
+<tr>
+	<td nowrap="nowrap">Number only or alphabet only:</td>
+	<td nowrap="nowrap"><code>/^(\d+|[a-zA-Z]+)$/</code></td>
+</tr>
+</table>
+
+</td></tr>
 </table>
 <p>
 <input class="button-primary" type="submit" name="Submit" value="Save">

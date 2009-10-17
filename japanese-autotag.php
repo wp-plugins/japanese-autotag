@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Japanese Autotag
-Version: 0.2.6
+Version: 0.2.7
 Description: Automatically inserts tags by post titles.
 Author: Keisuke Oyama
 Author URI: http://keicode.com/
@@ -46,7 +46,8 @@ class JapaneseAutoTag {
 	
 		$options = array(
 			'appkey' => '',
-			'noiselist' => 'あれ|こと|これ|それ|ため|どれ|私|何'
+			'noiselist' => 'あれ|こと|これ|それ|ため|どれ|私|何',
+			'expattern' => ''
 		);
 		
 		$saved = get_option( $this->db_option );
@@ -80,6 +81,7 @@ class JapaneseAutoTag {
 						
 			$options['appkey'] = htmlentities(trim($_POST['appkey']), ENT_QUOTES, 'UTF-8');
 			$options['noiselist'] = htmlentities(trim($_POST['noiselist']), ENT_QUOTES, 'UTF-8');
+			$options['expattern'] = trim($_POST['expattern']);
 			
 			if ( $options['appkey'] == '' || $this->validate_key( $options['appkey'] ) ) {
 				update_option( $this->db_option, $options );
@@ -95,6 +97,7 @@ class JapaneseAutoTag {
 		
 		$appkey = $options['appkey'];
 		$noiselist = $options['noiselist'];
+		$expattern = str_replace('\\\\', '\\', $options['expattern']);
 		
 		$action_url = $_SERVER['REQUEST_URI'];
 		
@@ -139,8 +142,9 @@ class JapaneseAutoTag {
 	}
 	
 	
-	function get_word_array( $appkey, $sentence, $filter = '9', $exwords = array() ) {
+	function get_word_array( $appkey, $sentence, $filter = '9', $exwords = array(), $expattern = '' ) {
 
+		$expattern = trim( $expattern );
 		$result = array();
 			
 		$url = 'http://jlp.yahooapis.jp/MAService/V1/parse?filter=' 
@@ -159,9 +163,17 @@ class JapaneseAutoTag {
 			}
 
 			foreach($xml->ma_result->word_list->word as $w) {
-				if( !in_array($w->surface, $exwords) ) {
-					$result[] = $w->surface;
-				}		
+				
+				if( in_array($w->surface, $exwords) ) {
+					continue;
+				}
+
+				if( $expattern != '' && @preg_match( $expattern, $w->surface) ) {
+					continue;
+				}
+				
+				$result[] = $w->surface;
+						
 			}
 		
 		}
@@ -176,11 +188,18 @@ class JapaneseAutoTag {
 			$wa = $dom->get_elements_by_tagname('surface');
 			
 			for($i=0; $i<count($wa); $i++) {
+
 				$t = $wa[$i]->get_content();				
 				
-				if( !in_array($t, $exwords) ) {
-					$result[] = $t;
+				if( in_array($t, $exwords) ) {
+					continue;
 				}
+				
+				if( $expattern != '' && @preg_match( $expattern, $t ) ) {
+					continue;
+				}
+				
+				$result[] = $t;
 			}
 		}
 		
@@ -206,7 +225,8 @@ class JapaneseAutoTag {
 			$options['appkey'], 
 			$p->post_title,
 			'9',
-			$noise );
+			$noise,
+			str_replace('\\\\', '\\', $options['expattern']) );
 	
 	}
 	
