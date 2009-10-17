@@ -133,17 +133,60 @@ class JapaneseAutoTag {
 	
 	function validate_key ($key) {
 	
-		$c = @file_get_contents( 
-			'http://jlp.yahooapis.jp/MAService/V1/parse?filter=9&appid=' 
-			. $key . '&results=ma&sentence=test'
-		);
-		
-		
-		$xml = simplexml_load_string( $c );
-		
-		return $xml === false ? false : true;	
+		$wa = $this->get_word_array( $key, 'test' );
+		return ( count($wa) > 0 );		
 
 	}
+	
+	
+	function get_word_array( $appkey, $sentence, $filter = '9', $exwords = array() ) {
+
+		$result = array();
+			
+		$url = 'http://jlp.yahooapis.jp/MAService/V1/parse?filter=' 
+			. $filter . '&appid=' 
+			. $appkey . '&results=ma&sentence=' 
+			. urlencode($sentence);
+
+		$c = @file_get_contents( $url );
+		
+		if( function_exists('simplexml_load_string') ) { // PHP5 or later
+
+			$xml = simplexml_load_string ( $c );
+
+			if($xml === false) {
+				return $result;
+			}
+
+			foreach($xml->ma_result->word_list->word as $w) {
+				if( !in_array($w->surface, $exwords) ) {
+					$result[] = $w->surface;
+				}		
+			}
+		
+		}
+		else { // PHP4
+		
+			$dom = domxml_open_mem ( $c );
+			
+			if(!$dom) {
+				return $result;
+			}
+			
+			$wa = $dom->get_elements_by_tagname('surface');
+			
+			for($i=0; $i<count($wa); $i++) {
+				$t = $wa[$i]->get_content();				
+				
+				if( !in_array($t, $exwords) ) {
+					$result[] = $t;
+				}
+			}
+		}
+		
+		return $result;
+	
+	} 
 	
 	
 	function get_tags( $post_id ) {
@@ -155,29 +198,15 @@ class JapaneseAutoTag {
 		}
 		
 		$noise = explode('|', $options['noiselist']);
-		
-		$result = array();
-		
+				
 		$p = get_post( $post_id );
 		
-		// Tokenize
-		$q = urlencode( $p->post_title );
-		$url = 'http://jlp.yahooapis.jp/MAService/V1/parse?filter=9&appid=' 
-			. $options['appkey'] . '&results=ma&sentence=' . $q;
-		$c = file_get_contents( $url );
-		
-		$xml = simplexml_load_string ( $c );
-	
-		// Extract Nouns
-		foreach($xml->ma_result->word_list->word as $w) {
-		
-			if( !in_array($w->surface, $noise) ) {
-				$result[] = $w->surface;
-			}
-		
-		}
-		
-		return $result;
+		// Tokenize		
+		return $this->get_word_array(
+			$options['appkey'], 
+			$p->post_title,
+			'9',
+			$noise );
 	
 	}
 	
