@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Japanese Autotag
-Version: 0.2.7
+Version: 0.2.8
 Description: Automatically inserts tags by post titles.
 Author: Keisuke Oyama
 Author URI: http://keicode.com/
@@ -26,12 +26,39 @@ class JapaneseAutoTag {
 
 	var $db_option = 'JapaneseAutoTag_Options';
 	
+	var $add_on_publish_post;
+	var $add_on_save_post;
 	
 	function JapaneseAutoTag() {
-				
-		add_action( 'publish_post', array(&$this, 'insert_tags') );
+	
+		$options = $this->get_options();
+		
+		$this->add_on_publish_post = $options['add_on_publish_post'];
+		$this->add_on_save_post    = $options['add_on_save_post'];
+	
+		add_action( 'save_post', array(&$this, 'on_save_post' ) );
+		add_action( 'publish_post', array(&$this, 'on_publish_post') );
 		add_action( 'admin_menu', array(&$this, 'admin_menu') );
 		
+	}
+
+	
+	function on_save_post( $post_id ) {
+		
+		if( $this->add_on_save_post === 'on' ){
+			$this->insert_tags( $post_id );
+		}
+	
+	}
+	
+	
+	function on_publish_post( $post_id ) {
+	
+		if( $this->add_on_publish_post === 'on' 
+			&& $this->add_on_save_post === 'off' ){
+			$this->insert_tags( $post_id );
+		}
+	
 	}
 		
 		
@@ -47,7 +74,9 @@ class JapaneseAutoTag {
 		$options = array(
 			'appkey' => '',
 			'noiselist' => 'あれ|こと|これ|それ|ため|どれ|私|何',
-			'expattern' => ''
+			'expattern' => '',
+			'add_on_publish_post' => 'on',
+			'add_on_save_post' => 'off'
 		);
 		
 		$saved = get_option( $this->db_option );
@@ -82,13 +111,16 @@ class JapaneseAutoTag {
 			$options['appkey'] = htmlentities(trim($_POST['appkey']), ENT_QUOTES, 'UTF-8');
 			$options['noiselist'] = htmlentities(trim($_POST['noiselist']), ENT_QUOTES, 'UTF-8');
 			$options['expattern'] = trim($_POST['expattern']);
+			$options['add_on_save_post'] 
+				= $this->add_on_save_post
+				= ($_POST['add_on_save_post'] === 'on') ? 'on' : 'off';
+			
+			update_option( $this->db_option, $options );
 			
 			if ( $options['appkey'] == '' || $this->validate_key( $options['appkey'] ) ) {
-				update_option( $this->db_option, $options );
 				echo '<div class="updated fade">Plugin settings saved.</div>';
 			}
 			else {
-				$options['appkey'] = '';
 				echo '<div class="error">The key seems invalid. Please make sure you entered a valid application key.</div>';
 			}
 			
@@ -98,6 +130,7 @@ class JapaneseAutoTag {
 		$appkey = $options['appkey'];
 		$noiselist = $options['noiselist'];
 		$expattern = str_replace('\\\\', '\\', $options['expattern']);
+		$add_on_save_post = $options['add_on_save_post'];
 		
 		$action_url = $_SERVER['REQUEST_URI'];
 		

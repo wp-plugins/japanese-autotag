@@ -19,6 +19,15 @@ Enter words you don't want to add as tag. If you want to enter multiple words, s
 </p>
 <p><input type="text" style="width:500px;" name="noiselist" value="<?php echo $noiselist; ?>"></p>
 </td></tr>
+<tr><td valign="top"><p>Add Tags When:</p></td><td>
+<p>
+Tags will be automatically generated every time you publish posts. If you want to generate tags every time you save your post even if it's a draft, check the following:
+</p>
+<p>
+<input type="checkbox" name="add_on_save_post" value="on" <?php if( $add_on_save_post === 'on' ){ echo 'checked'; } ?>> Save post
+</p>
+
+</td></tr>
 <tr><td valign="top"><p>Exception Pattern:<br><i>Advanced</i></p></td><td>
 <p>
 You can specify a Perl-style regular expression pattern to prohibit words matching the pattern from being tagged.  
