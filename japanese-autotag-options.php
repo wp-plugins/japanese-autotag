@@ -8,6 +8,12 @@ by <strong><a href="http://keicode.com/">Keisuke Oyama</a></strong>
 <?php wp_nonce_field('japanese-autotag-nonce'); ?>
 <h3>Options</h3>
 <table>
+<tr><td valign="top"></td><td>
+<p>
+<input type="radio" name="enabled" value="on" <?php if( $enabled === 'on' ) { echo 'checked'; } ?>><br>
+<input type="radio" name="enabled" value="off" <?php if( $enabled === 'off' ) { echo 'checked'; } ?>><br>
+</tr>
+<tr>
 <tr><td valign="top"><p>Application Key:</p></td><td>
 <p>Enter your Yahoo! Japan Application ID. You can get the ID from <a href="http://e.developer.yahoo.co.jp/webservices/register_application">Yahoo! Japan's website</a>.</p>
 <p><input type="text" style="width:600px;" name="appkey" value="<?php echo $appkey; ?>"></p>

@@ -26,6 +26,7 @@ class JapaneseAutoTag {
 
 	var $db_option = 'JapaneseAutoTag_Options';
 	
+	var $enabled;
 	var $add_on_publish_post;
 	var $add_on_save_post;
 	
@@ -45,7 +46,8 @@ class JapaneseAutoTag {
 	
 	function on_save_post( $post_id ) {
 		
-		if( $this->add_on_save_post === 'on' ){
+		if( $this->enabled === 'on' 
+			&& $this->add_on_save_post === 'on' ){
 			$this->insert_tags( $post_id );
 		}
 	
@@ -54,7 +56,8 @@ class JapaneseAutoTag {
 	
 	function on_publish_post( $post_id ) {
 	
-		if( $this->add_on_publish_post === 'on' 
+		if( $this->enabled === 'on'
+			&& $this->add_on_publish_post === 'on' 
 			&& $this->add_on_save_post === 'off' ){
 			$this->insert_tags( $post_id );
 		}
@@ -72,6 +75,7 @@ class JapaneseAutoTag {
 	function get_options() {
 	
 		$options = array(
+			'enabled' => 'on',
 			'appkey' => '',
 			'noiselist' => 'あれ|こと|これ|それ|ため|どれ|私|何',
 			'expattern' => '',
@@ -107,7 +111,10 @@ class JapaneseAutoTag {
 			check_admin_referer( 'japanese-autotag-nonce' );
 			
 			$options = array();
-						
+			
+			$options['enabled'] = 
+				= $this->enabled
+				= ($_POST['enabled'] === 'on') ? 'on' : 'off';
 			$options['appkey'] = htmlentities(trim($_POST['appkey']), ENT_QUOTES, 'UTF-8');
 			$options['noiselist'] = htmlentities(trim($_POST['noiselist']), ENT_QUOTES, 'UTF-8');
 			$options['expattern'] = trim($_POST['expattern']);
