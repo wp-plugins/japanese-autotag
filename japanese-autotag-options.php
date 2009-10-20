@@ -8,10 +8,11 @@ by <strong><a href="http://keicode.com/">Keisuke Oyama</a></strong>
 <?php wp_nonce_field('japanese-autotag-nonce'); ?>
 <h3>Options</h3>
 <table>
-<tr><td valign="top"></td><td>
+<tr><td valign="top"><p>Plugin Status:</p></td><td>
 <p>
-<input type="radio" name="enabled" value="on" <?php if( $enabled === 'on' ) { echo 'checked'; } ?>><br>
-<input type="radio" name="enabled" value="off" <?php if( $enabled === 'off' ) { echo 'checked'; } ?>><br>
+<input type="radio" name="enabled" value="on" <?php if( $enabled == 'on' ) { echo 'checked'; } ?>> Enabled<br>
+<input type="radio" name="enabled" value="off" <?php if( $enabled == 'off' ) { echo 'checked'; } ?>> Disabled
+</p>
 </tr>
 <tr>
 <tr><td valign="top"><p>Application Key:</p></td><td>

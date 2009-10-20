@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Japanese Autotag
-Version: 0.2.8
+Version: 0.2.9
 Description: Automatically inserts tags by post titles.
 Author: Keisuke Oyama
 Author URI: http://keicode.com/
@@ -36,6 +36,7 @@ class JapaneseAutoTag {
 		
 		$this->add_on_publish_post = $options['add_on_publish_post'];
 		$this->add_on_save_post    = $options['add_on_save_post'];
+		$this->enabled = $options['enabled'];
 	
 		add_action( 'save_post', array(&$this, 'on_save_post' ) );
 		add_action( 'publish_post', array(&$this, 'on_publish_post') );
@@ -112,7 +113,7 @@ class JapaneseAutoTag {
 			
 			$options = array();
 			
-			$options['enabled'] = 
+			$options['enabled']
 				= $this->enabled
 				= ($_POST['enabled'] === 'on') ? 'on' : 'off';
 			$options['appkey'] = htmlentities(trim($_POST['appkey']), ENT_QUOTES, 'UTF-8');
@@ -138,7 +139,7 @@ class JapaneseAutoTag {
 		$noiselist = $options['noiselist'];
 		$expattern = str_replace('\\\\', '\\', $options['expattern']);
 		$add_on_save_post = $options['add_on_save_post'];
-		
+		$enabled = $options['enabled'];
 		$action_url = $_SERVER['REQUEST_URI'];
 		
 		include ( 'japanese-autotag-options.php' );
