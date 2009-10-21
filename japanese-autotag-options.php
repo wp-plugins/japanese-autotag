@@ -20,6 +20,14 @@ by <strong><a href="http://keicode.com/">Keisuke Oyama</a></strong>
 <p><input type="text" style="width:600px;" name="appkey" value="<?php echo $appkey; ?>"></p>
 </td>
 </tr>
+<tr><td valign="top"><p>Scope:</p></td><td>
+<p>
+The plugin parses only post title for tagging in a default setting, and typically it's enough. If you want to parse post content as well, check the following: 
+</p>
+<p>
+<input type="checkbox" name="parse_body" value="on" <?php if( $parse_body === 'on' ) { echo 'checked'; } ?>> Include post content
+</p>
+</td></tr>
 <tr><td valign="top"><p>Exception Words:</p></td><td>
 <p>
 Enter words you don't want to add as tag. If you want to enter multiple words, separate each word by '|' sign. (ex. 春|夏|秋)

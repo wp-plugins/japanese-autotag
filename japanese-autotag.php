@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Japanese Autotag
-Version: 0.2.9
+Version: 0.2.10
 Description: Automatically inserts tags by post titles.
 Author: Keisuke Oyama
 Author URI: http://keicode.com/
@@ -29,6 +29,7 @@ class JapaneseAutoTag {
 	var $enabled;
 	var $add_on_publish_post;
 	var $add_on_save_post;
+	var $parse_body;
 	
 	function JapaneseAutoTag() {
 	
@@ -37,7 +38,8 @@ class JapaneseAutoTag {
 		$this->add_on_publish_post = $options['add_on_publish_post'];
 		$this->add_on_save_post    = $options['add_on_save_post'];
 		$this->enabled = $options['enabled'];
-	
+		$this->parse_body = $options['parse_body'];
+		
 		add_action( 'save_post', array(&$this, 'on_save_post' ) );
 		add_action( 'publish_post', array(&$this, 'on_publish_post') );
 		add_action( 'admin_menu', array(&$this, 'admin_menu') );
@@ -81,7 +83,8 @@ class JapaneseAutoTag {
 			'noiselist' => 'あれ|こと|これ|それ|ため|どれ|私|何',
 			'expattern' => '',
 			'add_on_publish_post' => 'on',
-			'add_on_save_post' => 'off'
+			'add_on_save_post' => 'off',
+			'parse_body' => 'off'
 		);
 		
 		$saved = get_option( $this->db_option );
@@ -122,6 +125,9 @@ class JapaneseAutoTag {
 			$options['add_on_save_post'] 
 				= $this->add_on_save_post
 				= ($_POST['add_on_save_post'] === 'on') ? 'on' : 'off';
+			$options['parse_body']
+				= $this->parse_body
+				= ($_POST['parse_body'] === 'on') ? 'on' : 'off';
 			
 			update_option( $this->db_option, $options );
 			
@@ -141,6 +147,7 @@ class JapaneseAutoTag {
 		$add_on_save_post = $options['add_on_save_post'];
 		$enabled = $options['enabled'];
 		$action_url = $_SERVER['REQUEST_URI'];
+		$parse_body = $options['parse_body'];
 		
 		include ( 'japanese-autotag-options.php' );
 	
@@ -244,7 +251,7 @@ class JapaneseAutoTag {
 			}
 		}
 		
-		return $result;
+		return array_unique($result);
 	
 	} 
 	
@@ -261,10 +268,16 @@ class JapaneseAutoTag {
 				
 		$p = get_post( $post_id );
 		
+		$t = $p->post_title;
+		
+		if( $this->parse_body === 'on' ){
+			$t .= ' ' . strip_tags($p->post_content); 
+		}
+		
 		// Tokenize		
 		return $this->get_word_array(
 			$options['appkey'], 
-			$p->post_title,
+			$t,
 			'9',
 			$noise,
 			str_replace('\\\\', '\\', $options['expattern']) );
