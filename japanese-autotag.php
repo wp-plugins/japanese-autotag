@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Japanese Autotag
-Version: 0.2.10
+Version: 0.2.11
 Description: Automatically inserts tags by post titles.
 Author: Keisuke Oyama
 Author URI: http://keicode.com/
@@ -30,6 +30,20 @@ class JapaneseAutoTag {
 	var $add_on_publish_post;
 	var $add_on_save_post;
 	var $parse_body;
+	var $wc1;
+	var $wc2;
+	var $wc3;
+	var $wc4;
+	var $wc5;
+	var $wc6;
+	var $wc7;
+	var $wc8;
+	var $wc9;
+	var $wc10;
+	var $wc11;
+	var $wc12;
+	var $wc13;
+	
 	
 	function JapaneseAutoTag() {
 	
@@ -39,6 +53,19 @@ class JapaneseAutoTag {
 		$this->add_on_save_post    = $options['add_on_save_post'];
 		$this->enabled = $options['enabled'];
 		$this->parse_body = $options['parse_body'];
+		$this->wc1 = $options['wc1'];
+		$this->wc2 = $options['wc2'];
+		$this->wc3 = $options['wc3'];
+		$this->wc4 = $options['wc4'];
+		$this->wc5 = $options['wc5'];
+		$this->wc6 = $options['wc6'];
+		$this->wc7 = $options['wc7'];
+		$this->wc8 = $options['wc8'];
+		$this->wc9 = $options['wc9'];
+		$this->wc10 = $options['wc10'];
+		$this->wc11 = $options['wc11'];
+		$this->wc12 = $options['wc12'];
+		$this->wc13 = $options['wc13'];
 		
 		add_action( 'save_post', array(&$this, 'on_save_post' ) );
 		add_action( 'publish_post', array(&$this, 'on_publish_post') );
@@ -84,7 +111,20 @@ class JapaneseAutoTag {
 			'expattern' => '',
 			'add_on_publish_post' => 'on',
 			'add_on_save_post' => 'off',
-			'parse_body' => 'off'
+			'parse_body' => 'off',
+			'wc1' => 'off',
+			'wc2' => 'off',
+			'wc3' => 'off',
+			'wc4' => 'off',
+			'wc5' => 'off',
+			'wc6' => 'off',
+			'wc7' => 'off',
+			'wc8' => 'off',
+			'wc9' => 'on',
+			'wc10' => 'off',
+			'wc11' => 'off',
+			'wc12' => 'off',
+			'wc13' => 'off'
 		);
 		
 		$saved = get_option( $this->db_option );
@@ -128,6 +168,20 @@ class JapaneseAutoTag {
 			$options['parse_body']
 				= $this->parse_body
 				= ($_POST['parse_body'] === 'on') ? 'on' : 'off';
+				
+			$options['wc1'] = $this->wc1 = ($_POST['wc1'] === 'on') ? 'on' : 'off';
+			$options['wc2'] = $this->wc2 = ($_POST['wc2'] === 'on') ? 'on' : 'off';
+			$options['wc3'] = $this->wc3 = ($_POST['wc3'] === 'on') ? 'on' : 'off';
+			$options['wc4'] = $this->wc4 = ($_POST['wc4'] === 'on') ? 'on' : 'off';
+			$options['wc5'] = $this->wc5 = ($_POST['wc5'] === 'on') ? 'on' : 'off';
+			$options['wc6'] = $this->wc6 = ($_POST['wc6'] === 'on') ? 'on' : 'off';
+			$options['wc7'] = $this->wc7 = ($_POST['wc7'] === 'on') ? 'on' : 'off';
+			$options['wc8'] = $this->wc8 = ($_POST['wc8'] === 'on') ? 'on' : 'off';
+			$options['wc9'] = $this->wc9 = ($_POST['wc9'] === 'on') ? 'on' : 'off';
+			$options['wc10'] = $this->wc10 = ($_POST['wc10'] === 'on') ? 'on' : 'off';
+			$options['wc11'] = $this->wc11 = ($_POST['wc11'] === 'on') ? 'on' : 'off';
+			$options['wc12'] = $this->wc12 = ($_POST['wc12'] === 'on') ? 'on' : 'off';
+			$options['wc13'] = $this->wc13 = ($_POST['wc13'] === 'on') ? 'on' : 'off';
 			
 			update_option( $this->db_option, $options );
 			
@@ -148,6 +202,19 @@ class JapaneseAutoTag {
 		$enabled = $options['enabled'];
 		$action_url = $_SERVER['REQUEST_URI'];
 		$parse_body = $options['parse_body'];
+		$wc1 = $options['wc1'];
+		$wc2 = $options['wc2'];
+		$wc3 = $options['wc3'];
+		$wc4 = $options['wc4'];
+		$wc5 = $options['wc5'];
+		$wc6 = $options['wc6'];
+		$wc7 = $options['wc7'];
+		$wc8 = $options['wc8'];
+		$wc9 = $options['wc9'];
+		$wc10 = $options['wc10'];
+		$wc11 = $options['wc11'];
+		$wc12 = $options['wc12'];
+		$wc13 = $options['wc13'];
 		
 		include ( 'japanese-autotag-options.php' );
 	
@@ -274,14 +341,35 @@ class JapaneseAutoTag {
 			$t .= ' ' . strip_tags($p->post_content); 
 		}
 		
+		$wordclasses = $this->get_word_class( $options );
+		
 		// Tokenize		
 		return $this->get_word_array(
 			$options['appkey'], 
 			$t,
-			'9',
+			$wordclasses,
 			$noise,
 			str_replace('\\\\', '\\', $options['expattern']) );
 	
+	}
+	
+	
+	function get_word_class( $options ){
+	
+		$wc = '';
+		
+		for($i=1; $i<=13; $i++){
+		
+			if( $options['wc'.$i] != 'on' ){
+				continue;
+			}
+			
+			$wc .= ($wc ? '|' : '') . $i;
+		
+		}
+	
+		return $wc;
+		
 	}
 	
 

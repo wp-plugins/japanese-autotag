@@ -43,6 +43,36 @@ Tags will be automatically generated every time you publish posts. If you want t
 </p>
 
 </td></tr>
+<tr><td valign="top"><p>Word Class:</p></td><td>
+<p>
+Select word classes for tagging. If you uncheck all, all classes can be used.
+</p>
+<table>
+<tr>
+<td><input type="checkbox" name="wc1" value="on" <?php if( $wc1 === 'on' ){ echo 'checked'; } ?>> Adjective (形容詞)</td>
+<td><input type="checkbox" name="wc2" value="on" <?php if( $wc2 === 'on' ){ echo 'checked'; } ?>> Adjective verb (形容動詞)</td>
+<td><input type="checkbox" name="wc3" value="on" <?php if( $wc3 === 'on' ){ echo 'checked'; } ?>> Exclamation (感動詞)</td>
+<td><input type="checkbox" name="wc4" value="on" <?php if( $wc4 === 'on' ){ echo 'checked'; } ?>> Adverb (副詞)</td>
+</tr>
+<tr>
+<td><input type="checkbox" name="wc5" value="on" <?php if( $wc5 === 'on' ){ echo 'checked'; } ?>> Adnominal (連体詞)</td>
+<td><input type="checkbox" name="wc6" value="on" <?php if( $wc6 === 'on' ){ echo 'checked'; } ?>> Conjunction (接続詞)</td>
+<td><input type="checkbox" name="wc7" value="on" <?php if( $wc7 === 'on' ){ echo 'checked'; } ?>> Prefix (接頭辞)</td>
+<td><input type="checkbox" name="wc8" value="on" <?php if( $wc8 === 'on' ){ echo 'checked'; } ?>> Suffix (接尾辞)</td>
+</tr>
+<tr>
+<td><input type="checkbox" name="wc9" value="on" <?php if( $wc9 === 'on' ){ echo 'checked'; } ?>> Noun (名詞)</td>
+<td><input type="checkbox" name="wc10" value="on" <?php if( $wc10 === 'on' ){ echo 'checked'; } ?>> Verb (動詞)</td>
+<td><input type="checkbox" name="wc11" value="on" <?php if( $wc11 === 'on' ){ echo 'checked'; } ?>> Particle (助詞)</td>
+<td><input type="checkbox" name="wc12" value="on" <?php if( $wc12 === 'on' ){ echo 'checked'; } ?>> Verbal auxiliary (助動詞)</td>
+</tr>
+<tr>
+<td><input type="checkbox" name="wc13" value="on" <?php if( $wc13 === 'on' ){ echo 'checked'; } ?>> Other (特殊、その他)</td>
+</tr>
+</table>
+
+
+</td></tr>
 <tr><td valign="top"><p>Exception Pattern:<br><i>Advanced</i></p></td><td>
 <p>
 You can specify a Perl-style regular expression pattern to prohibit words matching the pattern from being tagged.  
