@@ -20,6 +20,15 @@ by <strong><a href="http://keicode.com/">Keisuke Oyama</a></strong>
 <p><input type="text" style="width:600px;" name="appkey" value="<?php echo $appkey; ?>"></p>
 </td>
 </tr>
+<tr><td valign="top"><p>Key Phrase Tagging:</p></td><td>
+<p>
+Japanese AutoTag will tag based on key phrases instead of words. When Key Phrase Tagging is enabled, Scope option will be ignored.
+</p>
+<p>
+<input type="checkbox" name="keyphrase_enabled" value="on" <?php if( $keyphrase_enabled === 'on' ) { echo 'checked'; } ?>> Enabled
+</p>
+</td>
+</tr>
 <tr><td valign="top"><p>Scope:</p></td><td>
 <p>
 The plugin parses only post title for tagging in a default setting, and typically it's enough. If you want to parse post content as well, check the following: 

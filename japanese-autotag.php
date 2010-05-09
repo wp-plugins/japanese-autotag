@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Japanese Autotag
-Version: 0.2.13
+Version: 0.2.14
 Description: Automatically inserts tags by post titles.
 Author: Keisuke Oyama
 Author URI: http://keicode.com/
@@ -30,6 +30,7 @@ class JapaneseAutoTag {
 	var $add_on_publish_post;
 	var $add_on_save_post;
 	var $parse_body;
+	var $keyphrase_enabled;
 	var $wc1;
 	var $wc2;
 	var $wc3;
@@ -53,6 +54,7 @@ class JapaneseAutoTag {
 		$this->add_on_save_post    = $options['add_on_save_post'];
 		$this->enabled = $options['enabled'];
 		$this->parse_body = $options['parse_body'];
+		$this->keyphrase_enabled = $options['keyphrase_enabled'];
 		$this->wc1 = $options['wc1'];
 		$this->wc2 = $options['wc2'];
 		$this->wc3 = $options['wc3'];
@@ -112,6 +114,7 @@ class JapaneseAutoTag {
 			'add_on_publish_post' => 'on',
 			'add_on_save_post' => 'off',
 			'parse_body' => 'off',
+			'keyphrase_enabled' => 'off',
 			'wc1' => 'off',
 			'wc2' => 'off',
 			'wc3' => 'off',
@@ -168,6 +171,9 @@ class JapaneseAutoTag {
 			$options['parse_body']
 				= $this->parse_body
 				= ($_POST['parse_body'] === 'on') ? 'on' : 'off';
+			$options['keyphrase_enabled']
+				= $this->keyphrase_enabled
+				= ($_POST['keyphrase_enabled'] === 'on') ? 'on' : 'off';
 				
 			$options['wc1'] = $this->wc1 = ($_POST['wc1'] === 'on') ? 'on' : 'off';
 			$options['wc2'] = $this->wc2 = ($_POST['wc2'] === 'on') ? 'on' : 'off';
@@ -215,6 +221,7 @@ class JapaneseAutoTag {
 		$wc11 = $options['wc11'];
 		$wc12 = $options['wc12'];
 		$wc13 = $options['wc13'];
+		$keyphrase_enabled = $options['keyphrase_enabled'];
 		
 		include ( 'japanese-autotag-options.php' );
 	
@@ -261,7 +268,7 @@ class JapaneseAutoTag {
 
 		$expattern = trim( $expattern );
 		$result = array();
-			
+		
 		$url = 'http://jlp.yahooapis.jp/MAService/V1/parse?filter=' 
 			. $filter . '&appid=' 
 			. $appkey . '&results=ma&sentence=' 
@@ -320,6 +327,72 @@ class JapaneseAutoTag {
 		
 		return array_unique($result);
 	
+	}
+	
+	
+	function get_keyphrase_array( $appkey, $sentence, $exwords = array(), $expattern = '' ) {
+
+		$expattern = trim( $expattern );
+		$result = array();
+		
+		$url = 'http://jlp.yahooapis.jp/KeyphraseService/V1/extract?' 
+			. 'appid=' . $appkey 
+			. '&results=xml&sentence=' 
+			. urlencode($sentence);			
+
+		$c = @file_get_contents( $url );
+		
+		if( function_exists('simplexml_load_string') ) { // PHP5 or later
+
+			$xml = simplexml_load_string ( $c );
+
+			if($xml === false) {
+				return $result;
+			}
+
+			foreach($xml->Result as $w) {
+				
+				if( in_array($w->Keyphrase, $exwords) ) {
+					continue;
+				}
+
+				if( $expattern != '' && @preg_match( $expattern, $w->Keyphrase) ) {
+					continue;
+				}
+				
+				$result[] = $w->Keyphrase;
+						
+			}
+		
+		}
+		else { // PHP4
+		
+			$dom = domxml_open_mem ( $c );
+			
+			if(!$dom) {
+				return $result;
+			}
+			
+			$wa = $dom->get_elements_by_tagname('Keyphrase');
+			
+			for($i=0; $i<count($wa); $i++) {
+
+				$t = $wa[$i]->get_content();				
+				
+				if( in_array($t, $exwords) ) {
+					continue;
+				}
+				
+				if( $expattern != '' && @preg_match( $expattern, $t ) ) {
+					continue;
+				}
+				
+				$result[] = $t;
+			}
+		}
+		
+		return array_unique($result);
+	
 	} 
 	
 	
@@ -344,12 +417,21 @@ class JapaneseAutoTag {
 		$wordclasses = $this->get_word_class( $options );
 		
 		// Tokenize		
-		return $this->get_word_array(
-			$options['appkey'], 
-			$t,
-			$wordclasses,
-			$noise,
-			str_replace('\\\\', '\\', $options['expattern']) );
+		return ( $this->keyphrase_enabled  === 'on' ?
+			$this->get_keyphrase_array(
+				$options['appkey'], 
+				$t,
+				$noise,
+				str_replace('\\\\', '\\', $options['expattern']) )
+			:
+			$this->get_word_array(
+				$options['appkey'], 
+				$t,
+				$wordclasses,
+				$noise,
+				str_replace('\\\\', '\\', $options['expattern']) )
+		
+		);
 	
 	}
 	
